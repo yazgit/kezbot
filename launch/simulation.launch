@@ -1,0 +1,28 @@
+<launch>
+
+    <arg name="robot_name" value="turtle1" />
+    <param name="robot_name" type="str" value="turtle1" />
+
+
+    <!-- Turtlesim Node-->
+    <node pkg="turtlesim" type="turtlesim_node" name="$(arg robot_name)"/>
+
+    <!-- Teleop Node -->
+    <include file="$(find kezbot_v2)/launch/teleop_xbox.launch">
+        <arg name="robot_name" value="$(arg robot_name)" />
+    </include>
+
+    <!-- Transform Broadcaster -->
+    <node pkg="kezbot_v2" type="kezbot_v2_sim_tf_broadcaster"
+        args="/$(arg robot_name)" name="$(arg robot_name)_tf_broadcaster" />
+
+
+    <!-- Odometry broadcaster -->
+    <node pkg="kezbot_v2" type="kezbot_v2_sim_odom_publisher"
+        args="$(arg robot_name)" name="$(arg robot_name)_odom_publisher"/>
+
+
+    <!-- rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find kezbot_v2)/rviz/view_kezbot.rviz" />
+
+</launch>

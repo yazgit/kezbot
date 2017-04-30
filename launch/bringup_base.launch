@@ -1,0 +1,38 @@
+<launch>
+
+    <arg name="robot_name" value="kezbot" />
+    <param name="robot_name" type="str" value="kezbot" />
+
+<!-- TODO rosserial_python call here-->
+    <node pkg="rosserial_python" type="serial_node.py" name="kezbot_bringup">
+        <param name="port" value="/dev/ttyACM0" />
+        <param name="baud" value="115200" />
+    </node>
+
+    <!-- Laser Node -->
+    <include file="$(find kezbot_v2)/launch/bringup_laser.launch">
+        <arg name="robot_name" value="$(arg robot_name)" />
+    </include>
+
+    <!-- Raspicam Node -->
+    <!-- <include file="$(find kezbot_v2)/launch/bringup_raspicam.launch">
+        <arg name="robot_name" value="$(arg robot_name)" />
+    </include> -->
+
+    <!-- Transform Broadcaster -->
+    <node pkg="kezbot_v2" type="kezbot_v2_tf_broadcaster"
+        args="/$(arg robot_name)" name="$(arg robot_name)_tf_broadcaster" />
+
+    <node pkg="kezbot_v2" type="kezbot_v2_odom_publisher"
+        args="$(arg robot_name)" name="$(arg robot_name)_odom_publisher" />
+
+    <node pkg="tf" type="static_transform_publisher"
+        name="$(arg robot_name)_laser_tf_broadcaster"
+        args="0 0 0.15 0 0 0 1 $(arg robot_name)/base_link $(arg robot_name)/laser 100" />
+
+    <node pkg="tf" type="static_transform_publisher"
+        name="$(arg robot_name)_camera_tf_broadcaster"
+        args="0 0 0.10 0 0 0 1 $(arg robot_name) $(arg robot_name)/raspicam 100" />
+
+
+</launch>

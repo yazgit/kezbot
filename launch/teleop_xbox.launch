@@ -1,0 +1,21 @@
+<launch>
+
+    <arg name="robot_name" default="kezbot" />
+
+    <!-- joy node -->
+    <node respawn="true" pkg="joy"
+        type="joy_node" name="joy" >
+        <param name="dev" type="string" value="/dev/input/js1" />
+        <param name="deadzone" value="0.12" />
+    </node>
+    <!-- Axes -->
+    <param name="axis_linear" value="1" type="int"/>
+    <param name="axis_angular" value="3" type="int"/>
+    <param name="scale_linear" value="2" type="double"/>
+    <param name="scale_angular" value="2" type="double"/>
+
+    <!-- Teleop node -->
+    <node pkg="kezbot_v2" type="kezbot_v2_teleop_joy"
+        args="$(arg robot_name)" name="$(arg robot_name)_teleop"/>
+
+</launch>
